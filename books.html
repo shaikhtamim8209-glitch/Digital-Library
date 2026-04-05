@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>The Library — All Books</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 2.2rem 0 1.2rem;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+        }
+
+        .section-heading::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--tan), transparent);
+        }
+
+
+        .genre-anchor {
+            display: block;
+            height: 80px;
+            margin-top: -80px;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            .genre-anchor {
+                height: 110px;
+                margin-top: -110px;
+            }
+        }
+
+
+        .gennav {
+            position: sticky;
+            top: 60px;
+            z-index: 90;
+            background: rgba(255, 253, 247, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 12px 0 10px;
+            margin: 0 -40px 0;
+            padding-left: 40px;
+            padding-right: 40px;
+            border-bottom: 1px solid rgba(200, 136, 46, 0.12);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+
+        .row {
+            gap: 20px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+        }
+
+        .cell {
+            display: flex;
+            flex-direction: column;
+            background: var(--parchment);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(200, 136, 46, 0.15);
+            transition: transform 0.3s cubic-bezier(.25, .8, .25, 1), box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .cell::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .cell:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cell img {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+            display: block;
+            background: var(--cream);
+        }
+
+
+        .cover-placeholder {
+            width: 100%;
+            aspect-ratio: 2/3;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            text-align: center;
+            gap: 10px;
+        }
+
+        .cover-placeholder .cp-icon {
+            font-size: 2rem;
+        }
+
+        .cover-placeholder .cp-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            font-style: italic;
+            color: inherit;
+            line-height: 1.3;
+        }
+
+        .cover-placeholder .cp-author {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0.75;
+        }
+
+
+        .bg-fantasy {
+            background: linear-gradient(160deg, #3a5a20, #1e3010);
+            color: #d4e8c0;
+        }
+
+        .bg-fiction {
+            background: linear-gradient(160deg, #7a4a10, #3d2008);
+            color: #f5d9a8;
+        }
+
+        .bg-nonfic {
+            background: linear-gradient(160deg, #1a4060, #0d2030);
+            color: #b8d4e8;
+        }
+
+        .bg-horror {
+            background: linear-gradient(160deg, #3d1010, #1a0808);
+            color: #e8b8b8;
+        }
+
+        .bg-history {
+            background: linear-gradient(160deg, #4a3010, #251808);
+            color: #e0c898;
+        }
+
+        .bg-mystery {
+            background: linear-gradient(160deg, #2a2535, #14121a);
+            color: #c8c0e0;
+        }
+
+        .cell p {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            font-style: italic;
+            color: var(--sepia);
+            text-align: center;
+            padding: 10px 12px 6px;
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        .cell .author-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--amber);
+            text-align: center;
+            padding: 0 12px 10px;
+            margin: 0;
+            font-style: normal;
+        }
+
+
+        .count-badge {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            padding: 3px 11px;
+            border-radius: 20px;
+            background: rgba(200, 136, 46, 0.12);
+            color: var(--amber);
+            border: 1px solid rgba(200, 136, 46, 0.22);
+            white-space: nowrap;
+            align-self: center;
+        }
+
+        @media (max-width: 700px) {
+            .gennav {
+                margin: 0 -16px;
+                padding-left: 16px;
+                padding-right: 16px;
+                top: 56px;
+            }
+
+            .row {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topnav">
+        <a href="index.html" id="home"> The Library</a>
+        <a class="active" href="books.html">All Books</a>
+        <a href="catalogue.html">Catalogue</a>
+        <a href="authors.html">Authors</a>
+        <a href="login.html">Login</a>
+        <a href="about.html">About Us</a>
+    </div>
+
+    <div class="main">
+        <h1>Browse Our Collection</h1>
+        <p style="color:var(--sepia);font-style:italic;margin-bottom:0.5rem;">
+            Wander through our genres and find your next great read. &nbsp;·&nbsp; <strong
+                style="color:var(--amber);">36 books</strong> across 6 genres.
+        </p>
+
+
+        <div class="gennav">
+            <a href="#fantasy" class="gen"> Fantasy</a>
+            <a href="#fiction" class="gen">Fiction</a>
+            <a href="#non-fiction" class="gen">Non-Fiction</a>
+            <a href="#horror" class="gen"> Horror</a>
+            <a href="#history" class="gen"> History</a>
+            <a href="#mystery" class="gen">Mystery</a>
+        </div>
+
+        <span class="genre-anchor" id="fantasy"></span>
+        <div class="section-heading">
+            <h2>Fantasy</h2>
+            <span class="count-badge">6 books</span>
+        </div>
+        <div class="row">
+            <div class="cell" tabindex="0" id="hp"><a href="https://thebookshelfbeforeme.wordpress.com/wp-content/uploads/2020/04/harry-potter-and-the-philosophers-stone-by-jk-rowling.pdf">
+                    <img src="https://m.media-amazon.com/images/I/81q77Q39nEL._SL1500_.jpg" alt="Harry Potter and the Philosopher's Stone">
+                    <p>Harry Potter and the Philosopher's Stone</p>
+                    <p class="author-tag">J. K. Rowling</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0" id="lotr"><a href="https://ia803107.us.archive.org/35/items/j-r-r-tolkien-lord-of-the-rings-01-the-fellowship-of-the-ring-retail-pdf/j-r-r-tolkien-lord-of-the-rings-01-the-fellowship-of-the-ring-retail-pdf.pdf">
+                    <img src="https://www.casualoptimist.com/wp-content/uploads/2020/09/fellowship-of-the-ring-illustration-johan-egerkrans-1000x1500.jpg" alt="The Lord of the Rings">
+                    <p>The Lord of the Rings</p>
+                    <p class="author-tag">J. R. R. Tolkien</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0" id="hobbit"><a href="https://rsd2-alert-durden-reading-room.weebly.com/uploads/6/7/1/6/6716949/the_hobbit_tolkien.pdf">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRb7QzUGGSP5YeBYEdkKUH4E_2Cz23_2NRGuA&s" alt="The Hobbit">
+                    <p>The Hobbit</p>
+                    <p class="author-tag">J. R. R. Tolkien</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://judithwolfe.wp.st-andrews.ac.uk/files/2017/08/Narnia.pdf">
+                    <img src="https://m.media-amazon.com/images/I/51XPgOQPxqL._SY445_SX342_FMwebp_.jpg" alt="The Chronicles of Narnia">
+                    <p>The Chronicles of Narnia</p>
+                    <p class="author-tag">C. S. Lewis</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://dn720004.ca.archive.org/0/items/english-collections-1/Dune%20Messiah%20-%20Frank%20Herbert.pdf">
+                    <img src="https://m.media-amazon.com/images/I/913padSawdL._SY425_.jpg" alt="Dune">
+                    <p>Dune</p>
+                    <p class="author-tag">Frank Herbert</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://bobson.ludost.net/hugoawardnominees/tmp/novella/Sanderson/The%20Emperor's%20Soul.pdf">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-NttoexrgfuFYEnZb1isDTOJMlc9u2GXTzg&s" alt="Mistborn: The Final Empire">
+                    <p>Mistborn: The Final Empire</p>
+                    <p class="author-tag">Brandon Sanderson</p>
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <span class="genre-anchor" id="fiction"></span>
+        <div class="section-heading">
+            <h2> Fiction</h2>
+            <span class="count-badge">6 books</span>
+        </div>
+        <div class="row">
+            <div class="cell" tabindex="0" id="gatsby"><a href="https://dn720706.ca.archive.org/0/items/in.ernet.dli.2015.184960/2015.184960.The-Great-Gatsby.pdf">
+                    <img src="https://nikol-verlag.de/cdn/shop/files/9783690430616_1500x2229.jpg?v=1767957859" alt="The Great Gatsby">
+                    <p>The Great Gatsby</p>
+                    <p class="author-tag">F. Scott Fitzgerald</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0" id="mkbird"><a href="https://www.raio.org/TKMFullText.pdf">
+                    <img src="https://cdn.britannica.com/21/182021-050-666DB6B1/book-cover-To-Kill-a-Mockingbird-many-1961.jpg?w=300" alt="To Kill a Mockingbird">
+                    <p>To Kill a Mockingbird</p>
+                    <p class="author-tag">Harper Lee</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0" id="1984"><a href="https://dn790002.ca.archive.org/0/items/NineteenEightyFour-Novel-GeorgeOrwell/orwell1984.pdf">
+                    <img src="https://m.media-amazon.com/images/I/715WdnBHqYL._SY425_.jpg" alt="1984">
+                    <p>1984</p>
+                    <p class="author-tag">George Orwell</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://msweinfurter.weebly.com/uploads/5/4/3/7/5437316/catcher_in_the_rye_pdf.pdf">
+                    <img src="https://m.media-amazon.com/images/I/51uEKxRBCHL._SY445_SX342_FMwebp_.jpg" alt="The Catcher in the Rye">
+                    <p>The Catcher in the Rye</p>
+                    <p class="author-tag">J. D. Salinger</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://dn790000.ca.archive.org/0/items/BraveNewWorld-and-BraveNewWorldRevisited/Brave-New-World_-_Aldous-Huxley.pdf">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQonNwlWhyKlAbbZLTejPLSenzfnPsRwLTIig&s" alt="Brave New World">
+                    <p>Brave New World</p>
+                    <p class="author-tag">Aldous Huxley</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://dn721507.ca.archive.org/0/items/OceanofPDF.comTheAlchemist/_OceanofPDF.com_The_Alchemist.pdf">
+                    <img src="https://m.media-amazon.com/images/I/81FPzmB5fgL._SY342_.jpg">
+                    <p>The Alchemist</p>
+                    <p class="author-tag">Paulo Coelho</p>
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <span class="genre-anchor" id="non-fiction"></span>
+        <div class="section-heading">
+            <h2> Non-Fiction</h2>
+            <span class="count-badge">6 books</span>
+        </div>
+        <div class="row">
+            <div class="cell" tabindex="0"><a href="https://dn790007.ca.archive.org/0/items/atomic-habits-pdfdrive/Atomic%20habits%20%28%20PDFDrive%20%29.pdf">
+                    <img src="https://m.media-amazon.com/images/I/817HaeblezL._AC_UF1000,1000_QL80_.jpg">
+                    <p>Atomic Habits</p>
+                    <p class="author-tag">James Clear</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://cpcglobal.org/publications/Sapiens%20A%20Brief%20History%20of%20Humankind.pdf">
+                    <img src="https://m.media-amazon.com/images/I/61i4k7DWNFL._AC_UF1000,1000_QL80_.jpg">
+                    <p>Sapiens: A Brief History of Humankind</p>
+                    <p class="author-tag">Yuval Noah Harari</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://dn790002.ca.archive.org/0/items/DanielKahnemanThinkingFastAndSlow/Daniel%20Kahneman-Thinking%2C%20Fast%20and%20Slow%20%20.pdf">
+                    <img
+                        src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1317793965i/11468377.jpg">
+                    <p>Thinking, Fast and Slow</p>
+                    <p class="author-tag">Daniel Kahneman</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://ia801405.us.archive.org/19/items/the-power-of-habit-hindi-book-life-feeling/%E0%A4%B9%E0%A5%88%E0%A4%AC%E0%A4%BF%E0%A4%9F%20The%20Power%20of%20Habit%20Hindi%20Book%20LifeFeeling.pdf">
+                    <img src="https://m.media-amazon.com/images/I/71eoUH2EngL.jpg">
+                    <p>The Power of Habit</p>
+                    <p class="author-tag">Charles Duhigg</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://archive.org/download/molana-muhammad-zakariyya-ke-aap-beeti.-vol-1-urdukutabkhanapk.blogspot/04-Jan-2021_Uploaded_Biography/Educated%20by%20Tara%20Westover_%28urdukutabkhanapk.blogspot%29.pdf">
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHtcDGz9fxMSYGUNwjVLHO-Exubg1otgYwKw&s">
+                    <p>Educated</p>
+                    <p class="author-tag">Tara Westover</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://static.fnac-static.com/multimedia/PT/pdf/9780241982976.pdf">
+                    <img src="https://m.media-amazon.com/images/I/81KGjsBXQ7L._AC_UF1000,1000_QL80_.jpg">
+                    <p>Becoming</p>
+                    <p class="author-tag">Michelle Obama</p>
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <span class="genre-anchor" id="horror"></span>
+        <div class="section-heading">
+            <h2>Horror</h2>
+            <span class="count-badge">6 books</span>
+        </div>
+        <div class="row">
+            <div class="cell" tabindex="0"><a href="https://clicklibrary.files.wordpress.com/2018/09/it-by-stephen-king.pdf">
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG_Tg6FQKelp1ZOo1zBijxYPPFkNyVv8LZ1A&s">
+                    <p>It</p>
+                    <p class="author-tag">Stephen King</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://englishprofi.com.ua/wp-content/uploads/Stephen-King-The-Shining.pdf">
+                    <img src="https://m.media-amazon.com/images/I/81XTtdxSUIL._AC_UF1000,1000_QL80_.jpg">
+                    <p>The Shining</p>
+                    <p class="author-tag">Stephen King</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://bramstoker.org/pdf/novels/05dracula.pdf">
+                    <img src="https://m.media-amazon.com/images/I/61jl29eQPSL._UF1000,1000_QL80_.jpg">
+                    <p>Dracula</p>
+                    <p class="author-tag">Bram Stoker</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://ia802908.us.archive.org/9/items/Frankenstein1818Edition/frank-a5.pdf">
+                    <img
+                        src="https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781982146177/frankenstein-9781982146177_hr.jpg">
+                    <p>Frankenstein</p>
+                    <p class="author-tag">Mary Shelley</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://havenner.weebly.com/uploads/2/0/5/7/20575006/jackson-shirley-the-haunting-of-hill-house.pdf">
+                    <img src="https://m.media-amazon.com/images/I/81FMksyikrL.jpg">
+                    <p>The Haunting of Hill House</p>
+                    <p class="author-tag">Shirley Jackson</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://pdfcoffee.com/download/house-of-leaves-mark-z-danielewski-5-pdf-free.html">
+                    <img
+                        src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1669823738i/871186.jpg">
+                    <p>House of Leaves</p>
+                    <p class="author-tag">Mark Z. Danielewski</p>
+                </a>
+            </div>
+        </div>
+
+        <hr>
+
+        <span class="genre-anchor" id="history"></span>
+        <div class="section-heading">
+            <h2>History</h2>
+            <span class="count-badge">6 books</span>
+        </div>
+        <div class="row">
+            <div class="cell" tabindex="0"><a href="https://cdn.bookey.app/files/pdf/book/en/the-guns-of-august.pdf">
+                    <img src="https://m.media-amazon.com/images/I/71vkxIftlzL._AC_UF1000,1000_QL80_.jpg">
+                    <p>The Guns of August</p>
+                    <p class="author-tag">Barbara W. Tuchman</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="https://files.libcom.org/files/A%20People%27s%20History%20of%20the%20Unite%20-%20Howard%20Zinn.pdf">
+                    <img src="https://m.media-amazon.com/images/I/71Zb-D8NaGL._AC_UF1000,1000_QL80_.jpg">
+                    <p>A People's History of the United States</p>
+                    <p class="author-tag">Howard Zinn</p>
+                </a>
+            </div>
+            <div class="cell" tabindex="0"><a href="http://elibrary.bsu.edu.az/files/books_400/N_389.pdf">
+                    <img src="https://m.media-amazon.com/images/I/61ZPZzCNhsL._AC_UF1000,1000_QL80_.jpg">
+                    <p>The Rise and Fall of the Third Reich</p>
+                    <p class="author-tag">William L. Shirer</p>
+                </a></div>
+            <div class="cell" tabindex="0"><a href="https://profilebooks.com/wp-content/uploads/wpallimport/files/PDFs/9781846683817_preview.pdf">
+                    <img src="https://m.media-amazon.com/images/I/91EuhODARQL.jpg">
+                    <p>SPQR: A History of Ancient Rome</p>
+                    <p class="author-tag">Mary Beard</p>
+                </a></div>
+            <div class="cell" tabindex="0"><a href="https://pahar.in/pahar/Books%20and%20Articles/Central%20Asia/2012%20Silk%20Road--a%20new%20history%20by%20Hansen%20s.pdf">
+                    <img src="https://m.media-amazon.com/images/I/A15++jTYXJL._AC_UF1000,1000_QL80_.jpg">
+                    <p>The Silk Roads: A New History of the World</p>
+                    <p class="author-tag">Peter Frankopan</p>
+                </a></div>
+            <div class="cell" tabindex="0"><a href="https://mrparratore.weebly.com/uploads/1/1/0/0/110095453/anne_frank_-_the_diary_of_a_young_girl_book_website.pdf">
+                    <img
+                        src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1560816565i/48855.jpg">
+                    <p>The Diary of a Young Girl</p>
+                    <p class="author-tag">Anne Frank</p>
+                </a></div>
+        </div>
+
+        <hr>
+
+        <span class="genre-anchor" id="mystery"></span>
+        <div class="section-heading">
+            <h2>Mystery</h2>
+            <span class="count-badge">6 books</span>
+        </div>
+        <div class="row">
+            <div class="cell" tabindex="0"><a href="https://www.tongaatsecondary.co.za/gallery/Swiss%20Family.pdf">
+                    <img src="https://m.media-amazon.com/images/I/81nChcVy7CL.jpg">
+                    <p>And Then There Were None</p>
+                    <p class="author-tag">Agatha Christie</p>
+                </a></div>
+            <div class="cell" tabindex="0"><a href="https://download.e-bookshelf.de/download/0000/5918/53/L-G-0000591853-0015293404.pdf">
+                    <img
+                        src="https://m.media-amazon.com/images/M/MV5BMTc2Mjc0MDg3MV5BMl5BanBnXkFtZTcwMjUzMDkxMw@@._V1_FMjpg_UX1000_.jpg">
+                    <p>The Girl with the Dragon Tattoo</p>
+                    <p class="author-tag">Stieg Larsson</p>
+                </a></div>
+            <div class="cell" tabindex="0"><a href="https://icrrd.com/public/media/15-05-2021-082725Gone-Girl-Gillian-Flynn.pdf">
+                    <img
+                        src="https://m.media-amazon.com/images/M/MV5BNTFkN2UwZjYtNzI5OC00MTNlLTgwNTEtYjBkOGZiNmY5NDg4XkEyXkFqcGc@._V1_QL75_UX190_CR0,2,190,281_.jpg">
+                    <p>Gone Girl</p>
+                    <p class="author-tag">Gillian Flynn</p>
+                </a></div>
+            <div class="cell" tabindex="0"><a href="https://archive.org/download/TheDaVinciCode_201308/The%20Da%20Vinci%20Code.pdf">
+                    <img src="https://m.media-amazon.com/images/I/815WORuYMML.jpg">
+                    <p>The Da Vinci Code</p>
+                    <p class="author-tag">Dan Brown</p>
+                </a></div>
+            <div class="cell" tabindex="0"><a href="https://archive.org/download/the-box-in-the-woods/The%20Box%20in%20the%20Woods.pdf">
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRZRKy49WNcyhX_3630PY5R4wjyXj_2B89Ng&s">
+                    <p>In the Woods</p>
+                    <p class="author-tag">Tana French</p>
+                </a></div>
+            <div class="cell" tabindex="0"><a href="https://hitalki.org/blog/wp-content/uploads/2023/05/Big-Little-Lies.pdf">
+                    <img
+                        src="https://m.media-amazon.com/images/M/MV5BY2E3ODNhNWYtYWQ0ZS00ZjdlLTg5NjItMzYwMTlkN2I3YTFjXkEyXkFqcGc@._V1_.jpg">
+                    <p>Big Little Lies</p>
+                    <p class="author-tag">Liane Moriarty</p>
+                </a></div>
+        </div>
+
+    </div>
+</body>
+
+</html>

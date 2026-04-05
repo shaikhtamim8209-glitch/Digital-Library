@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Library — Authors</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .authors-intro {
+            font-size: 1.1rem;
+            color: var(--sepia);
+            font-style: italic;
+            max-width: 640px;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 7px 18px;
+            border-radius: 30px;
+            border: 1.5px solid var(--tan);
+            background: transparent;
+            color: var(--sepia);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--amber);
+            border-color: var(--amber);
+            color: var(--white);
+        }
+
+        .authors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .author-card {
+            background: var(--parchment);
+            border: 1px solid rgba(200,136,46,0.18);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s cubic-bezier(.25,.8,.25,1), box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .author-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .author-card-top {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 20px 14px;
+            border-bottom: 1px solid rgba(200,136,46,0.12);
+        }
+
+        .author-avatar-placeholder {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 3px solid var(--tan);
+            background: linear-gradient(135deg, var(--cream), var(--tan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--sepia);
+            flex-shrink: 0;
+        }
+
+        .author-meta { flex: 1; min-width: 0; }
+
+        .author-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--sepia);
+            margin: 0 0 3px;
+            line-height: 1.25;
+        }
+
+        .author-years {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--amber);
+            letter-spacing: 0.08em;
+            margin: 0 0 7px;
+        }
+
+        .genre-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .genre-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 2px 9px;
+            border-radius: 20px;
+            background: var(--cream);
+            border: 1px solid var(--tan);
+            color: var(--sepia);
+        }
+
+        .author-card-body {
+            padding: 14px 20px 18px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .author-bio {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 0.98rem;
+            color: var(--ink);
+            line-height: 1.65;
+            margin: 0 0 12px;
+        }
+
+        .author-quote {
+            border-left: 3px solid var(--tan);
+            padding: 6px 12px;
+            margin: 0 0 14px;
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 0.92rem;
+            font-style: italic;
+            color: var(--sepia);
+            line-height: 1.55;
+        }
+
+        .author-books-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 6px;
+        }
+
+        .author-books-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+        }
+
+        .author-books-list li {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 0.92rem;
+            font-style: italic;
+            color: var(--sepia);
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .author-books-list li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--amber);
+            font-style: normal;
+            font-weight: 700;
+        }
+
+        .wiki-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--amber);
+            border: 1.5px solid var(--tan);
+            border-radius: 6px;
+            padding: 7px 16px;
+            transition: all 0.2s;
+            align-self: flex-start;
+        }
+        .wiki-link:hover {
+            background: var(--amber);
+            border-color: var(--amber);
+            color: var(--white);
+        }
+        .wiki-link svg {
+            width: 13px; height: 13px;
+            fill: currentColor;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .authors-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="topnav">
+        <a href="index.html" id="home"> The Library</a>
+        <a href="books.html">All Books</a>
+        <a href="catalogue.html">Catalogue</a>
+        <a class="active" href="authors.html">Authors</a>
+        <a href="login.html">Login</a>
+        <a href="about.html">About Us</a>
+    </div>
+
+    <div class="main">
+        <div class="page-header">
+            <div class="ornament"></div>
+            <div>
+                <h1>Authors</h1>
+                <p class="authors-intro">Behind every great book is a singular mind. Meet the authors whose works line our shelves — from Victorian gothic masters to contemporary voices that define a generation.</p>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterCards('all', this)">All</button>
+            <button class="filter-btn" onclick="filterCards('fantasy', this)">Fantasy</button>
+            <button class="filter-btn" onclick="filterCards('fiction', this)">Fiction</button>
+            <button class="filter-btn" onclick="filterCards('non-fiction', this)">Non-Fiction</button>
+            <button class="filter-btn" onclick="filterCards('horror', this)">Horror</button>
+            <button class="filter-btn" onclick="filterCards('mystery', this)">Mystery</button>
+        </div>
+
+        <div class="authors-grid" id="authorsGrid">
+
+            
+            <div class="author-card" data-genre="fantasy">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">JR</div>
+                    <div class="author-meta">
+                        <p class="author-name">J. K. Rowling</p>
+                        <p class="author-years">b. 1965 &middot; British</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Fantasy</span>
+                            <span class="genre-tag">Children's</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">Joanne Rowling wrote the first Harry Potter novel as a single mother on welfare, scribbling in Edinburgh cafés while her daughter slept. The series became the best-selling in history, fundamentally reshaping children's literature and popular culture worldwide.</p>
+                    <div class="author-quote">"It is our choices that show what we truly are, far more than our abilities."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>Harry Potter and the Philosopher's Stone (1997)</li>
+                        <li>Harry Potter and the Goblet of Fire (2000)</li>
+                        <li>Harry Potter and the Deathly Hallows (2007)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/J._K._Rowling" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="fantasy">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">JT</div>
+                    <div class="author-meta">
+                        <p class="author-name">J. R. R. Tolkien</p>
+                        <p class="author-years">1892 – 1973 &middot; British</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Fantasy</span>
+                            <span class="genre-tag">Mythology</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">Oxford professor and philologist John Ronald Reuel Tolkien invented entire languages before writing the stories to accompany them. His legendarium — Middle-earth — is the most fully realized secondary world in literary history, and established the template for modern epic fantasy.</p>
+                    <div class="author-quote">"Not all those who wander are lost."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>The Hobbit (1937)</li>
+                        <li>The Lord of the Rings (1954–55)</li>
+                        <li>The Silmarillion (1977)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/J._R._R._Tolkien" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="fantasy">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">FH</div>
+                    <div class="author-meta">
+                        <p class="author-name">Frank Herbert</p>
+                        <p class="author-years">1920 – 1986 &middot; American</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Fantasy</span>
+                            <span class="genre-tag">Sci-Fi</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">Herbert spent six years researching Dune — a novel so complex that twelve publishers rejected it before it became the best-selling science fiction novel of all time. He was deeply influenced by Jungian psychology, ecology, and desert cultures from around the world.</p>
+                    <div class="author-quote">"I must not fear. Fear is the mind-killer."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>Dune (1965)</li>
+                        <li>Dune Messiah (1969)</li>
+                        <li>Children of Dune (1976)</li>
+                        <li>God Emperor of Dune (1981)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/Frank_Herbert" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="fiction">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">GO</div>
+                    <div class="author-meta">
+                        <p class="author-name">George Orwell</p>
+                        <p class="author-years">1903 – 1950 &middot; British</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Fiction</span>
+                            <span class="genre-tag">Dystopian</span>
+                            <span class="genre-tag">Political</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">Eric Arthur Blair — writing as George Orwell — was a journalist, essayist, and novelist whose experiences fighting in the Spanish Civil War and working as a colonial policeman in Burma fuelled his fierce critiques of totalitarianism and imperial power.</p>
+                    <div class="author-quote">"If liberty means anything at all, it means the right to tell people what they do not want to hear."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>Animal Farm (1945)</li>
+                        <li>1984 (1949)</li>
+                        <li>Homage to Catalonia (1938)</li>
+                        <li>Down and Out in Paris and London (1933)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/George_Orwell" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="fiction">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">FF</div>
+                    <div class="author-meta">
+                        <p class="author-name">F. Scott Fitzgerald</p>
+                        <p class="author-years">1896 – 1940 &middot; American</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Fiction</span>
+                            <span class="genre-tag">Jazz Age</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">The voice of the Jazz Age, Fitzgerald captured the glittering excess and underlying despair of 1920s America better than anyone. He lived the life he wrote about — lavish parties, doomed romance, and the relentless pursuit of a dream just out of reach.</p>
+                    <div class="author-quote">"So we beat on, boats against the current, borne back ceaselessly into the past."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>The Great Gatsby (1925)</li>
+                        <li>Tender Is the Night (1934)</li>
+                        <li>This Side of Paradise (1920)</li>
+                        <li>The Beautiful and Damned (1922)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/F._Scott_Fitzgerald" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="fiction">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">HL</div>
+                    <div class="author-meta">
+                        <p class="author-name">Harper Lee</p>
+                        <p class="author-years">1926 – 2016 &middot; American</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Fiction</span>
+                            <span class="genre-tag">Southern Gothic</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">A childhood friend of Truman Capote, Nelle Harper Lee published just two novels in her lifetime — but the first won the Pulitzer Prize and became one of the most-read American novels ever. She spent much of her later life deliberately and famously avoiding the spotlight she had earned.</p>
+                    <div class="author-quote">"You never really understand a person until you climb inside of his skin and walk around in it."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>To Kill a Mockingbird (1960)</li>
+                        <li>Go Set a Watchman (2015)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/Harper_Lee" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="fiction">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">PC</div>
+                    <div class="author-meta">
+                        <p class="author-name">Paulo Coelho</p>
+                        <p class="author-years">b. 1947 &middot; Brazilian</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Fiction</span>
+                            <span class="genre-tag">Philosophical</span>
+                            <span class="genre-tag">Spiritual</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">Coelho was committed to a psychiatric institution by his parents three times as a teenager, later worked as a songwriter, and walked the 500-mile Camino de Santiago pilgrimage before writing The Alchemist — a book rejected by its first publisher that went on to sell 65 million copies in 80 languages.</p>
+                    <div class="author-quote">"And, when you want something, all the universe conspires in helping you to achieve it."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>The Alchemist (1988)</li>
+                        <li>Brida (1990)</li>
+                        <li>The Zahir (2005)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/Paulo_Coelho" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="horror">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">SK</div>
+                    <div class="author-meta">
+                        <p class="author-name">Stephen King</p>
+                        <p class="author-years">b. 1947 &middot; American</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Horror</span>
+                            <span class="genre-tag">Thriller</span>
+                            <span class="genre-tag">Supernatural</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">The undisputed King of Horror has published over 63 novels and 200 short stories. He wrote his debut novel Carrie on a typewriter balanced on his knees in a trailer home — and famously threw the manuscript in the bin before his wife retrieved it. The rest is literary history.</p>
+                    <div class="author-quote">"Monsters are real, and ghosts are real too. They live inside us, and sometimes, they win."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>Carrie (1974)</li>
+                        <li>The Shining (1977)</li>
+                        <li>It (1986)</li>
+                        <li>Misery (1987)</li>
+                        <li>The Dark Tower series (1982–2012)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/Stephen_King" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="mystery">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">AC</div>
+                    <div class="author-meta">
+                        <p class="author-name">Agatha Christie</p>
+                        <p class="author-years">1890 – 1976 &middot; British</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Mystery</span>
+                            <span class="genre-tag">Detective</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">The best-selling fiction writer of all time — outsold only by the Bible and Shakespeare — Christie created Hercule Poirot and Miss Marple, two of literature's most beloved detectives. Her own life contained one unsolved mystery: in 1926 she vanished for eleven days and never publicly explained why.</p>
+                    <div class="author-quote">"The impossible could not have happened; therefore the impossible must be possible in spite of appearances."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>And Then There Were None (1939)</li>
+                        <li>Murder on the Orient Express (1934)</li>
+                        <li>Death on the Nile (1937)</li>
+                        <li>The Murder of Roger Ackroyd (1926)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/Agatha_Christie" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="mystery">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">GF</div>
+                    <div class="author-meta">
+                        <p class="author-name">Gillian Flynn</p>
+                        <p class="author-years">b. 1971 &middot; American</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Mystery</span>
+                            <span class="genre-tag">Thriller</span>
+                            <span class="genre-tag">Psychological</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">A former TV critic for Entertainment Weekly, Flynn burst onto the thriller scene with Sharp Objects in 2006. Gone Girl's unreliable narration and its calculating female antagonist redefined the psychological thriller genre and spent 8 weeks at #1 on the New York Times bestseller list.</p>
+                    <div class="author-quote">"There's something disturbing about recalling a warm memory and feeling utterly cold."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>Sharp Objects (2006)</li>
+                        <li>Dark Places (2009)</li>
+                        <li>Gone Girl (2012)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/Gillian_Flynn" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="non-fiction">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">YH</div>
+                    <div class="author-meta">
+                        <p class="author-name">Yuval Noah Harari</p>
+                        <p class="author-years">b. 1976 &middot; Israeli</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Non-Fiction</span>
+                            <span class="genre-tag">History</span>
+                            <span class="genre-tag">Philosophy</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">A historian at the Hebrew University of Jerusalem, Harari synthesizes anthropology, biology, and philosophy into sweeping narratives about humanity's past and future. Sapiens, originally written in Hebrew, became a global phenomenon after being recommended by Barack Obama and Bill Gates.</p>
+                    <div class="author-quote">"History is something that very few people have been doing while everyone else was ploughing fields and carrying water."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>Sapiens: A Brief History of Humankind (2011)</li>
+                        <li>Homo Deus: A Brief History of Tomorrow (2015)</li>
+                        <li>21 Lessons for the 21st Century (2018)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/Yuval_Noah_Harari" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+            
+            <div class="author-card" data-genre="non-fiction">
+                <div class="author-card-top">
+                    <div class="author-avatar-placeholder">JC</div>
+                    <div class="author-meta">
+                        <p class="author-name">James Clear</p>
+                        <p class="author-years">b. 1986 &middot; American</p>
+                        <div class="genre-tags">
+                            <span class="genre-tag">Non-Fiction</span>
+                            <span class="genre-tag">Self-Help</span>
+                            <span class="genre-tag">Psychology</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-card-body">
+                    <p class="author-bio">A former baseball player whose career was cut short by a serious injury, Clear turned his recovery into a years-long study of habits and human behaviour. Atomic Habits has sold over 20 million copies and is one of the fastest-selling non-fiction books of the 21st century.</p>
+                    <div class="author-quote">"You do not rise to the level of your goals. You fall to the level of your systems."</div>
+                    <p class="author-books-label">Notable Works</p>
+                    <ul class="author-books-list">
+                        <li>Atomic Habits (2018)</li>
+                        <li>Atomic Habits: The Journal (2023)</li>
+                    </ul>
+                    <a class="wiki-link" href="https://en.wikipedia.org/wiki/James_Clear" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Wikipedia
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

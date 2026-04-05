@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Library — Member Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .portal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        @media (max-width: 780px) {
+            .portal-grid { grid-template-columns: 1fr; }
+        }
+
+        
+        .portal-panel {
+            background: var(--parchment);
+            border: 1px solid rgba(200,136,46,0.18);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .panel-header {
+            background: var(--sepia);
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .panel-header .panel-icon {
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        .panel-header h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            font-style: italic;
+            color: var(--cream);
+            margin: 0;
+        }
+
+        .panel-header p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--tan);
+            margin: 2px 0 0;
+        }
+
+        .panel-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .field label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--sepia);
+        }
+
+        .field input[type="text"],
+        .field input[type="email"],
+        .field input[type="password"],
+        .field select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--tan);
+            border-radius: 8px;
+            background: var(--white);
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1rem;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--amber);
+            box-shadow: 0 0 0 3px rgba(200,136,46,0.15);
+        }
+
+        .field select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a5f2a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+            cursor: pointer;
+        }
+
+        
+        .check-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 2px;
+        }
+
+        .check-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 0.95rem;
+            color: var(--sepia);
+            cursor: pointer;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        .check-group input[type="radio"],
+        .check-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--amber);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        
+        .field-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--tan), transparent);
+            margin: 2px 0;
+        }
+
+        
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 12px;
+            background: var(--sepia);
+            color: var(--cream);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1rem;
+            font-style: italic;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .btn-primary:hover {
+            background: var(--amber);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            padding: 12px 20px;
+            background: transparent;
+            color: var(--sepia);
+            border: 1.5px solid var(--tan);
+            border-radius: 8px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background: var(--tan);
+            border-color: var(--tan);
+            color: var(--white);
+        }
+
+        
+        .portal-footer {
+            text-align: center;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            color: var(--tan);
+            margin-top: 28px;
+        }
+    </style>
+</head>
+<body>
+    <div class="topnav">
+        <a href="index.html" id="home">The Library</a>
+        <a href="books.html">All Books</a>
+        <a href="catalogue.html">Catalogue</a>
+        <a href="authors.html">Authors</a>
+        <a class="active" href="login.html">Login</a>
+        <a href="about.html">About Us</a>
+    </div>
+
+    <div class="main">
+        <div class="page-header">
+            <div class="ornament"></div>
+            <div>
+                <h1>Member Portal</h1>
+                <p style="color:var(--sepia);font-style:italic;">Sign in to your account or join our reading community.</p>
+            </div>
+        </div>
+
+        <div class="portal-grid">
+
+        
+            <div class="portal-panel">
+                <div class="panel-header">
+                    <div class="panel-icon"></div>
+                    <div>
+                        <h2>Existing Members</h2>
+                        <p>Sign in to your account</p>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="field">
+                        <label for="login-user">Username</label>
+                        <input type="text" id="login-user" placeholder="Enter your username">
+                    </div>
+                    <div class="field">
+                        <label for="login-pass">Password</label>
+                        <input type="password" id="login-pass" placeholder="Enter your password">
+                    </div>
+                    <div class="btn-row">
+                        <button class="btn-primary">Login</button>
+                        <button class="btn-secondary" onclick="document.getElementById('login-user').value='';document.getElementById('login-pass').value=''">Clear</button>
+                    </div>
+                </div>
+            </div>
+
+        
+            <div class="portal-panel">
+                <div class="panel-header">
+                    <div class="panel-icon"></div>
+                    <div>
+                        <h2>New Members</h2>
+                        <p>Create your library account</p>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="field">
+                        <label for="reg-name">Full Name</label>
+                        <input type="text" id="reg-name" placeholder="Enter your full name">
+                    </div>
+                    <div class="field">
+                        <label for="reg-email">Email</label>
+                        <input type="email" id="reg-email" placeholder="Enter your email">
+                    </div>
+                    <div class="field">
+                        <label for="reg-user">Username</label>
+                        <input type="text" id="reg-user" placeholder="Create a username">
+                    </div>
+                    <div class="field">
+                        <label for="reg-pass">Password</label>
+                        <input type="password" id="reg-pass" placeholder="Create a password">
+                    </div>
+
+                    <div class="field-divider"></div>
+
+                    <div class="field">
+                        <label>Gender</label>
+                        <div class="check-group">
+                            <label><input type="radio" name="gender" value="male"> Male</label>
+                            <label><input type="radio" name="gender" value="female"> Female</label>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="reg-course">Course</label>
+                        <select id="reg-course">
+                            <option value="" disabled selected>Select your course</option>
+                            <option>Primary Education</option>
+                            <option>Secondary Education</option>
+                            <option>Diploma</option>
+                            <option>Engineering</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Hobbies</label>
+                        <div class="check-group">
+                            <label><input type="checkbox"> Reading</label>
+                            <label><input type="checkbox"> Writing</label>
+                            <label><input type="checkbox"> Coding</label>
+                            <label><input type="checkbox"> Research</label>
+                        </div>
+                    </div>
+
+                    <div class="btn-row">
+                        <button class="btn-primary">Register</button>
+                        <button class="btn-secondary" onclick="this.closest('.panel-body').querySelectorAll('input[type=text],input[type=email],input[type=password]').forEach(i=>i.value='');this.closest('.panel-body').querySelectorAll('input[type=radio],input[type=checkbox]').forEach(i=>i.checked=false);document.getElementById('reg-course').selectedIndex=0">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <p class="portal-footer">© 2026 The Library &nbsp;·&nbsp; Your data is safe with us</p>
+    </div>
+</body>
+</html>

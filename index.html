@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>The Library — Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hero {
+            position: relative;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background-image: url(images/hero.jpg);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(20, 12, 6, 0.35) 0%, rgba(20, 12, 6, 0.60) 100%);
+        }
+
+        .hero>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-weight: 900;
+            font-style: italic;
+            color: var(--cream);
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 0.2em;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h2 {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: clamp(1.1rem, 3vw, 1.6rem);
+            font-weight: 300;
+            font-style: italic;
+            color: rgba(245, 233, 208, 0.85);
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+            margin-bottom: 0.8em;
+            letter-spacing: 0.06em;
+        }
+
+        .hero p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(200, 136, 46, 0.9);
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+        }
+
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 1.6rem;
+        }
+
+        .section-title h2 {
+            margin: 0;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--tan), transparent);
+        }
+
+
+        .featured-book {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 36px;
+            align-items: start;
+            background: var(--parchment);
+            border-radius: 14px;
+            padding: 32px;
+            border: 1px solid rgba(200, 136, 46, 0.18);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-book::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            right: 24px;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 14rem;
+            font-weight: 900;
+            color: rgba(200, 136, 46, 0.07);
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .featured-book img {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .featured-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: var(--amber);
+            color: var(--white);
+            width: fit-content;
+        }
+
+        .featured-meta h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.9rem;
+            font-weight: 900;
+            font-style: italic;
+            color: var(--sepia);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .featured-meta .author-line {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1rem;
+            color: var(--amber);
+            font-style: italic;
+        }
+
+        .featured-meta .blurb {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.05rem;
+            color: var(--ink);
+            line-height: 1.7;
+            max-width: 520px;
+        }
+
+        .star-rating {
+            color: var(--gold);
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+
+        .btn-outline {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 10px 26px;
+            border: 1.5px solid var(--amber);
+            border-radius: 8px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--amber);
+            transition: all 0.22s;
+            width: fit-content;
+        }
+
+        .btn-outline:hover {
+            background: var(--amber);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(154, 95, 42, 0.25);
+        }
+
+
+        .picks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .pick-card {
+            background: var(--parchment);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(200, 136, 46, 0.15);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .pick-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .pick-card img {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            display: block;
+        }
+
+        .pick-info {
+            padding: 14px 16px;
+        }
+
+        .pick-info .pick-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-style: italic;
+            color: var(--sepia);
+            margin-bottom: 4px;
+        }
+
+        .pick-info .pick-author {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--amber);
+        }
+
+        .pick-info .pick-note {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 0.88rem;
+            color: var(--ink);
+            margin-top: 8px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+
+        .quote-banner {
+            background: var(--sepia);
+            border-radius: 14px;
+            padding: 40px 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quote-banner::before,
+        .quote-banner::after {
+            content: '❧';
+            position: absolute;
+            font-size: 6rem;
+            color: rgba(255, 255, 255, 0.04);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .quote-banner::before {
+            left: 20px;
+        }
+
+        .quote-banner::after {
+            right: 20px;
+        }
+
+        .quote-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+            font-style: italic;
+            font-weight: 600;
+            color: var(--cream);
+            line-height: 1.55;
+            max-width: 700px;
+            margin: 0 auto 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-attr {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--tan);
+        }
+
+
+        .arrivals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 18px;
+        }
+
+        .arrival-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--parchment);
+            border-radius: 10px;
+            padding: 14px;
+            border: 1px solid rgba(200, 136, 46, 0.14);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.25s, box-shadow 0.25s;
+            cursor: pointer;
+        }
+
+        .arrival-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .arrival-card img {
+            width: 52px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 5px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .arrival-info {
+            min-width: 0;
+        }
+
+        .arrival-info .arr-title {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--sepia);
+            line-height: 1.3;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .arrival-info .arr-genre {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--amber);
+        }
+
+        .new-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--gold);
+            margin-right: 5px;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+
+
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .event-item {
+            display: grid;
+            grid-template-columns: 72px 1fr auto;
+            align-items: center;
+            gap: 18px;
+            background: var(--parchment);
+            border-radius: 10px;
+            padding: 16px 20px;
+            border: 1px solid rgba(200, 136, 46, 0.14);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s;
+        }
+
+        .event-item:hover {
+            transform: translateX(4px);
+        }
+
+        .event-date {
+            text-align: center;
+            background: var(--sepia);
+            color: var(--cream);
+            border-radius: 8px;
+            padding: 8px 6px;
+        }
+
+        .event-date .ev-day {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.7rem;
+            font-weight: 900;
+            line-height: 1;
+            display: block;
+        }
+
+        .event-date .ev-mon {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--tan);
+        }
+
+        .event-info h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--sepia);
+            margin: 0 0 4px;
+        }
+
+        .event-info p {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 0.88rem;
+            color: var(--amber);
+            margin: 0;
+            font-style: italic;
+        }
+
+        .event-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: rgba(200, 136, 46, 0.12);
+            color: var(--amber);
+            border: 1px solid rgba(200, 136, 46, 0.25);
+            white-space: nowrap;
+        }
+
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            background: var(--parchment);
+            border-radius: 14px;
+            padding: 28px 24px;
+            border: 1px solid rgba(200, 136, 46, 0.15);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 8px;
+            border-right: 1px solid rgba(200, 136, 46, 0.15);
+        }
+
+        .stat-item:last-child {
+            border-right: none;
+        }
+
+        .stat-num {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: var(--amber);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--sepia);
+        }
+
+
+        .newsletter-box {
+            background: linear-gradient(135deg, var(--sepia) 0%, #3a2210 100%);
+            border-radius: 14px;
+            padding: 36px 40px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .newsletter-box h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.45rem;
+            font-style: italic;
+            color: var(--cream);
+            margin: 0 0 6px;
+        }
+
+        .newsletter-box p {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 0.95rem;
+            color: var(--tan);
+            margin: 0;
+            font-style: italic;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+            min-width: 320px;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 11px 16px;
+            border-radius: 8px;
+            border: 1.5px solid rgba(200, 136, 46, 0.35);
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--cream);
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .newsletter-form input::placeholder {
+            color: rgba(245, 233, 208, 0.4);
+        }
+
+        .newsletter-form input:focus {
+            border-color: var(--gold);
+        }
+
+        .newsletter-form button {
+            padding: 11px 22px;
+            background: var(--amber);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            white-space: nowrap;
+        }
+
+        .newsletter-form button:hover {
+            background: var(--gold);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 800px) {
+            .featured-book {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-book img {
+                max-width: 200px;
+                margin: 0 auto;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .newsletter-box {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .newsletter-form {
+                min-width: unset;
+            }
+
+            .event-item {
+                grid-template-columns: 60px 1fr;
+            }
+
+            .event-tag {
+                display: none;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stat-item:nth-child(2) {
+                border-right: none;
+            }
+
+            .stat-item:nth-child(3) {
+                border-right: 1px solid rgba(200, 136, 46, 0.15);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topnav">
+        <a href="index.html" id="home">The Library</a>
+        <a href="books.html">All Books</a>
+        <a href="catalogue.html">Catalogue</a>
+        <a href="authors.html">Authors</a>
+        <a href="login.html">Login</a>
+        <a href="about.html">About Us</a>
+    </div>
+
+    <div class="main">
+
+
+        <div class="hero">
+            <h1>Welcome to The Library</h1>
+            <h2>Discover worlds between the pages</h2>
+            <p>✦ Explore our vast collection ✦</p>
+        </div>
+
+
+        <div class="section-title">
+            <h2>Browse by Genre</h2>
+        </div>
+        <div class="gennav-home">
+            <a class="gen-card" href="books.html#fiction"
+                style="background-image:url(images/genres/fiction.jfif)">Fiction</a>
+            <a class="gen-card" href="books.html#non-fiction"
+                style="background-image:url(images/genres/non-fiction.jpeg)">Non-Fiction</a>
+            <a class="gen-card" href="books.html#science-fiction"
+                style="background-image:url(images/genres/science-fiction.jfif);background-position:bottom">Sci-Fi</a>
+            <a class="gen-card" href="books.html#fantasy"
+                style="background-image:url(images/genres/fantasy.jfif)">Fantasy</a>
+            <a class="gen-card" href="books.html#mystery"
+                style="background-image:url(images/genres/mystery.jfif)">Mystery</a>
+            <a class="gen-card" href="books.html#biography"
+                style="background-image:url(images/genres/biography.jfif)">Biography</a>
+        </div>
+
+        <hr>
+
+
+        <div class="section-title">
+            <h2>All-Time Best-Sellers</h2>
+        </div>
+        <div class="scroll-row">
+            <div class="scroll-col"><a href="books.html#hp"><img
+                        src="https://m.media-amazon.com/images/I/81q77Q39nEL._SL1500_.jpg" alt="Harry Potter">
+                    <p>Harry Potter &amp; the Philosopher's Stone</p>
+                </a></div>
+            <div class="scroll-col"><a href="books.html#gatsby"><img
+                        src="https://nikol-verlag.de/cdn/shop/files/9783690430616_1500x2229.jpg?v=1767957859"
+                        alt="The Great Gatsby">
+                    <p>The Great Gatsby</p>
+                </a></div>
+            <div class="scroll-col"><a href="books.html#mkbird"><img
+                        src="https://cdn.britannica.com/21/182021-050-666DB6B1/book-cover-To-Kill-a-Mockingbird-many-1961.jpg?w=300"
+                        alt="To Kill a Mockingbird">
+                    <p>To Kill a Mockingbird</p>
+                </a></div>
+            <div class="scroll-col"><a href="books.html#lotr"><img
+                        src="https://www.casualoptimist.com/wp-content/uploads/2020/09/fellowship-of-the-ring-illustration-johan-egerkrans-1000x1500.jpg"
+                        alt="Lord of the Rings">
+                    <p>Lord of the Rings</p>
+                </a></div>
+            <div class="scroll-col"><a href="books.html#1984"><img
+                        src="https://m.media-amazon.com/images/I/715WdnBHqYL._SY425_.jpg"
+                        alt="1984">
+                    <p>1984</p>
+                </a></div>
+            <div class="scroll-col"><img
+                    src="https://m.media-amazon.com/images/I/51uEKxRBCHL._SY445_SX342_FMwebp_.jpg"
+                    alt="Catcher in the Rye">
+                <p>The Catcher in the Rye</p>
+            </div>
+            <div class="scroll-col"><img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQonNwlWhyKlAbbZLTejPLSenzfnPsRwLTIig&s"
+                    alt="Brave New World">
+                <p>Brave New World</p>
+            </div>
+        </div>
+
+        <hr>
+
+
+        <div class="section-title">
+            <h2>Book of the Month</h2>
+        </div>
+        <div class="featured-book">
+            <img src="https://cdn.britannica.com/21/182021-050-666DB6B1/book-cover-To-Kill-a-Mockingbird-many-1961.jpg?w=300"
+                alt="To Kill a Mockingbird">
+            <div class="featured-meta">
+                <span class="badge">✦ April 2026 Pick</span>
+                <h3>To Kill a Mockingbird</h3>
+                <div class="author-line">— Harper Lee</div>
+                <div class="star-rating">★★★★★</div>
+                <p class="blurb">
+                    A landmark of American literature, this Pulitzer Prize-winning novel follows young Scout Finch as
+                    her father, lawyer Atticus Finch, defends a Black man falsely accused of a crime in the racially
+                    charged Deep South. A timeless meditation on justice, empathy, and moral courage that resonates as
+                    powerfully today as it did in 1960.
+                </p>
+                <p
+                    style="font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.1em;color:var(--amber);text-transform:uppercase;">
+                    Fiction &nbsp;·&nbsp; 281 pages &nbsp;·&nbsp; ISBN 9780060935467
+                </p>
+                <a href="catalogue.html" class="btn-outline">View in Catalogue →</a>
+            </div>
+        </div>
+
+        <hr>
+
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-num">5,000+</div>
+                <div class="stat-label">Books Available</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">24</div>
+                <div class="stat-label">Genres Covered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">1,200+</div>
+                <div class="stat-label">Registered Members</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">350+</div>
+                <div class="stat-label">Authors Featured</div>
+            </div>
+        </div>
+
+        <hr>
+
+
+        <div class="section-title">
+            <h2>Staff Picks</h2>
+        </div>
+        <div class="picks-grid">
+            <div class="pick-card">
+                <img src="https://m.media-amazon.com/images/I/913padSawdL._SY425_.jpg"
+                    alt="Dune">
+                <div class="pick-info">
+                    <div class="pick-title">Dune</div>
+                    <div class="pick-author">Frank Herbert</div>
+                    <div class="pick-note">"A universe so rich you forget the real world exists." — Librarian Meera
+                    </div>
+                </div>
+            </div>
+            <div class="pick-card">
+                <img src="https://m.media-amazon.com/images/I/715WdnBHqYL._SY425_.jpg"
+                    alt="1984">
+                <div class="pick-info">
+                    <div class="pick-title">1984</div>
+                    <div class="pick-author">George Orwell</div>
+                    <div class="pick-note">"Unsettling, essential, and more relevant than ever." — Librarian Rajan</div>
+                </div>
+            </div>
+            <div class="pick-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-NttoexrgfuFYEnZb1isDTOJMlc9u2GXTzg&s"
+                    alt="Mistborn">
+                <div class="pick-info">
+                    <div class="pick-title">Mistborn</div>
+                    <div class="pick-author">Brandon Sanderson</div>
+                    <div class="pick-note">"Sanderson's magic system alone is worth the read." — Librarian Priya</div>
+                </div>
+            </div>
+            <div class="pick-card">
+                <img src="https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQgLu1FPrf5N8WzMrAFwJauWPjBGXg4wd6wHhL3OFp8uWyS7pyCx3GWnOrwArlbQ9nbc0YPZuuSkjnb-xzeOHlqU0CY4ALgR2M4tJZlGQtrL4kpJQeJuO8xCA&usqp=CAc"
+                    alt="The Alchemist">
+                <div class="pick-info">
+                    <div class="pick-title">The Alchemist</div>
+                    <div class="pick-author">Paulo Coelho</div>
+                    <div class="pick-note">"Every page feels like a personal letter to the soul." — Librarian Arun</div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+
+        <div class="quote-banner">
+            <p class="quote-text">"A reader lives a thousand lives before he dies. The man who never reads lives only
+                one."</p>
+            <div class="quote-attr">— George R. R. Martin</div>
+        </div>
+
+        <hr>
+
+
+        <div class="section-title">
+            <h2>New Arrivals</h2>
+        </div>
+        <div class="arrivals-grid">
+            <div class="arrival-card">
+                <img src="https://m.media-amazon.com/images/I/51XPgOQPxqL._SY445_SX342_FMwebp_.jpg" alt="Chronicles of Narnia">
+                <div class="arrival-info">
+                    <div class="arr-title">Chronicles of Narnia</div>
+                    <div class="arr-genre"><span class="new-dot"></span>Fantasy</div>
+                </div>
+            </div>
+            <div class="arrival-card">
+                <img src="https://m.media-amazon.com/images/I/51uEKxRBCHL._SY445_SX342_FMwebp_.jpg" alt="Catcher in the Rye">
+                <div class="arrival-info">
+                    <div class="arr-title">The Catcher in the Rye</div>
+                    <div class="arr-genre"><span class="new-dot"></span>Fiction</div>
+                </div>
+            </div>
+            <div class="arrival-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQonNwlWhyKlAbbZLTejPLSenzfnPsRwLTIig&s" alt="Brave New World">
+                <div class="arrival-info">
+                    <div class="arr-title">Brave New World</div>
+                    <div class="arr-genre"><span class="new-dot"></span>Fiction</div>
+                </div>
+            </div>
+            <div class="arrival-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRb7QzUGGSP5YeBYEdkKUH4E_2Cz23_2NRGuA&s" alt="The Hobbit">
+                <div class="arrival-info">
+                    <div class="arr-title">The Hobbit</div>
+                    <div class="arr-genre"><span class="new-dot"></span>Fantasy</div>
+                </div>
+            </div>
+            <div class="arrival-card">
+                <img src="https://m.media-amazon.com/images/I/81q77Q39nEL._SL1500_.jpg" alt="Harry Potter">
+                <div class="arrival-info">
+                    <div class="arr-title">Philosopher's Stone</div>
+                    <div class="arr-genre"><span class="new-dot"></span>Fantasy</div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+
+        <div class="section-title">
+            <h2>Upcoming Events</h2>
+        </div>
+        <div class="events-list">
+            <div class="event-item">
+                <div class="event-date">
+                    <span class="ev-day">05</span>
+                    <span class="ev-mon">Apr</span>
+                </div>
+                <div class="event-info">
+                    <h3>Book Club Meeting — Dune</h3>
+                    <p>Reading Hall B &nbsp;·&nbsp; 4:00 PM – 6:00 PM</p>
+                </div>
+                <span class="event-tag">Book Club</span>
+            </div>
+            <div class="event-item">
+                <div class="event-date">
+                    <span class="ev-day">12</span>
+                    <span class="ev-mon">Apr</span>
+                </div>
+                <div class="event-info">
+                    <h3>Author Talk: Mythology in Modern Fiction</h3>
+                    <p>Main Auditorium &nbsp;·&nbsp; 11:00 AM</p>
+                </div>
+                <span class="event-tag">Talk</span>
+            </div>
+            <div class="event-item">
+                <div class="event-date">
+                    <span class="ev-day">19</span>
+                    <span class="ev-mon">Apr</span>
+                </div>
+                <div class="event-info">
+                    <h3>Children's Storytelling Hour</h3>
+                    <p>Kids Corner &nbsp;·&nbsp; 10:00 AM – 11:30 AM</p>
+                </div>
+                <span class="event-tag">Kids</span>
+            </div>
+            <div class="event-item">
+                <div class="event-date">
+                    <span class="ev-day">26</span>
+                    <span class="ev-mon">Apr</span>
+                </div>
+                <div class="event-info">
+                    <h3>Creative Writing Workshop</h3>
+                    <p>Seminar Room 2 &nbsp;·&nbsp; 2:00 PM – 5:00 PM</p>
+                </div>
+                <span class="event-tag">Workshop</span>
+            </div>
+        </div>
+
+        <hr>
+
+
+        <div class="newsletter-box">
+            <div>
+                <h3>Stay in the Story</h3>
+                <p>Get our monthly newsletter — new arrivals, events, and curated reading lists delivered to your inbox.
+                </p>
+            </div>
+            <div class="newsletter-form">
+                <input type="email" placeholder="Your email address">
+                <button>Subscribe</button>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
